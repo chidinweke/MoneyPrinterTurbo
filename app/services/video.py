@@ -170,7 +170,7 @@ def combine_videos(
         logger.debug(f"processing clip {i+1}: {subclipped_item.width}x{subclipped_item.height}, current duration: {video_duration:.2f}s, remaining: {audio_duration - video_duration:.2f}s")
         
         try:
-            clip = VideoFileClip(subclipped_item.file_path).subclipped(subclipped_item.start_time, subclipped_item.end_time)
+            clip = VideoFileClip(subclipped_item.file_path, ffmpeg_params=["-hwaccel", "cuda"]).subclipped(subclipped_item.start_time, subclipped_item.end_time)
             clip_duration = clip.duration
             # Not all videos are same size, so we need to resize them
             clip_w, clip_h = clip.size
@@ -439,7 +439,7 @@ def generate_video(
             _clip = _clip.with_position(("center", "center"))
         return _clip
 
-    video_clip = VideoFileClip(video_path).without_audio()
+    video_clip = VideoFileClip(video_path, ffmpeg_params=["-hwaccel", "cuda"]).without_audio()
     audio_clip = AudioFileClip(audio_path).with_effects(
         [afx.MultiplyVolume(params.voice_volume)]
     )
@@ -497,7 +497,7 @@ def preprocess_video(materials: List[MaterialInfo], clip_duration=4):
 
         ext = utils.parse_extension(material.url)
         try:
-            clip = VideoFileClip(material.url)
+            clip = VideoFileClip(material.url, ffmpeg_params=["-hwaccel", "cuda"])
         except Exception:
             clip = ImageClip(material.url)
 
