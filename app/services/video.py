@@ -135,6 +135,7 @@ def combine_videos(
 
     aspect = VideoAspect(video_aspect)
     video_width, video_height = aspect.to_resolution()
+    video_bitrate = aspect.to_bitrate()
 
     processed_clips = []
     subclipped_items = []
@@ -219,7 +220,7 @@ def combine_videos(
                 
             # wirte clip to temp file
             clip_file = f"{output_dir}/temp-clip-{i+1}.mp4"
-            clip.write_videofile(clip_file, logger=None, fps=fps, codec=video_codec, preset="slow", bitrate="8000k")
+            clip.write_videofile(clip_file, logger=None, fps=fps, codec=video_codec, preset="slow", bitrate=video_bitrate)
             
             close_clip(clip)
         
@@ -283,7 +284,7 @@ def combine_videos(
                 audio_codec=audio_codec,
                 fps=fps,
                 preset="slow",
-                bitrate="8000k",
+                bitrate=video_bitrate,
             )
             close_clip(base_clip)
             close_clip(next_clip)
@@ -371,6 +372,7 @@ def generate_video(
 ):
     aspect = VideoAspect(params.video_aspect)
     video_width, video_height = aspect.to_resolution()
+    video_bitrate = aspect.to_bitrate()
 
     logger.info(f"generating video: {video_width} x {video_height}")
     logger.info(f"  ① video: {video_path}")
@@ -482,7 +484,7 @@ def generate_video(
         logger=None,
         fps=fps,
         preset="slow",
-        bitrate="8000k",
+        bitrate=video_bitrate,
     )
     video_clip.close()
     del video_clip
@@ -528,7 +530,7 @@ def preprocess_video(materials: List[MaterialInfo], clip_duration=4):
 
             # Output the video to a file.
             video_file = f"{material.url}.mp4"
-            final_clip.write_videofile(video_file, fps=30, logger=None, preset="slow", bitrate="8000k")
+            final_clip.write_videofile(video_file, fps=30, logger=None, preset="slow")
             close_clip(clip)
             material.url = video_file
             logger.success(f"image processed: {video_file}")

@@ -47,6 +47,19 @@ class VideoAspect(str, Enum):
             return 2160, 3840
         return 1080, 1920
 
+    def to_bitrate(self):
+        if self == VideoAspect.landscape.value:
+            return "8000k"
+        elif self == VideoAspect.portrait.value:
+            return "8000k"
+        elif self == VideoAspect.square.value:
+            return "5000k"
+        elif self == VideoAspect.landscape_4k.value:
+            return "16000k"
+        elif self == VideoAspect.portrait_4k.value:
+            return "16000k"
+        return "8000k"
+
 
 class _Config:
     arbitrary_types_allowed = True
