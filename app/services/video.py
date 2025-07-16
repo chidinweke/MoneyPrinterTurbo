@@ -119,6 +119,7 @@ def combine_videos(
     video_paths: List[str],
     audio_file: str,
     video_aspect: VideoAspect = VideoAspect.portrait,
+    video_quality: str = "high",
     video_concat_mode: VideoConcatMode = VideoConcatMode.random,
     video_transition_mode: VideoTransitionMode = None,
     max_clip_duration: int = 5,
@@ -135,7 +136,7 @@ def combine_videos(
 
     aspect = VideoAspect(video_aspect)
     video_width, video_height = aspect.to_resolution()
-    video_bitrate = aspect.to_bitrate()
+    video_bitrate = aspect.to_bitrate(quality=video_quality)
 
     processed_clips = []
     subclipped_items = []
@@ -372,7 +373,7 @@ def generate_video(
 ):
     aspect = VideoAspect(params.video_aspect)
     video_width, video_height = aspect.to_resolution()
-    video_bitrate = aspect.to_bitrate()
+    video_bitrate = aspect.to_bitrate(quality=params.video_quality)
 
     logger.info(f"generating video: {video_width} x {video_height}")
     logger.info(f"  ① video: {video_path}")

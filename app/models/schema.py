@@ -27,6 +27,13 @@ class VideoTransitionMode(str, Enum):
     slide_out = "SlideOut"
 
 
+class VideoQuality(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+    extra_high = "extra_high"
+
+
 class VideoAspect(str, Enum):
     landscape = "16:9"
     portrait = "9:16"
@@ -47,17 +54,23 @@ class VideoAspect(str, Enum):
             return 2160, 3840
         return 1080, 1920
 
-    def to_bitrate(self):
-        if self == VideoAspect.landscape.value:
-            return "8000k"
-        elif self == VideoAspect.portrait.value:
-            return "8000k"
-        elif self == VideoAspect.square.value:
+    def to_bitrate(self, quality: VideoQuality = VideoQuality.high):
+        if quality == VideoQuality.low.value:
+            if self in [VideoAspect.landscape_4k, VideoAspect.portrait_4k]:
+                return "8000k"
+            return "2500k"
+        elif quality == VideoQuality.medium.value:
+            if self in [VideoAspect.landscape_4k, VideoAspect.portrait_4k]:
+                return "12000k"
             return "5000k"
-        elif self == VideoAspect.landscape_4k.value:
-            return "16000k"
-        elif self == VideoAspect.portrait_4k.value:
-            return "16000k"
+        elif quality == VideoQuality.high.value:
+            if self in [VideoAspect.landscape_4k, VideoAspect.portrait_4k]:
+                return "16000k"
+            return "8000k"
+        elif quality == VideoQuality.extra_high.value:
+            if self in [VideoAspect.landscape_4k, VideoAspect.portrait_4k]:
+                return "20000k"
+            return "12000k"
         return "8000k"
 
 
@@ -91,6 +104,7 @@ class VideoParams(BaseModel):
     video_script: str = ""  # Script used to generate the video
     video_terms: Optional[str | list] = None  # Keywords used to generate the video
     video_aspect: Optional[VideoAspect] = VideoAspect.portrait.value
+    video_quality: Optional[VideoQuality] = VideoQuality.high.value
     video_concat_mode: Optional[VideoConcatMode] = VideoConcatMode.random.value
     video_transition_mode: Optional[VideoTransitionMode] = None
     video_clip_duration: Optional[int] = 5
