@@ -219,7 +219,7 @@ def combine_videos(
                 
             # wirte clip to temp file
             clip_file = f"{output_dir}/temp-clip-{i+1}.mp4"
-            clip.write_videofile(clip_file, logger=None, fps=fps, codec=video_codec)
+            clip.write_videofile(clip_file, logger=None, fps=fps, codec=video_codec, preset="slow", bitrate="8000k")
             
             close_clip(clip)
         
@@ -282,6 +282,8 @@ def combine_videos(
                 temp_audiofile_path=output_dir,
                 audio_codec=audio_codec,
                 fps=fps,
+                preset="slow",
+                bitrate="8000k",
             )
             close_clip(base_clip)
             close_clip(next_clip)
@@ -479,6 +481,8 @@ def generate_video(
         threads=params.n_threads or 2,
         logger=None,
         fps=fps,
+        preset="slow",
+        bitrate="8000k",
     )
     video_clip.close()
     del video_clip
@@ -524,7 +528,7 @@ def preprocess_video(materials: List[MaterialInfo], clip_duration=4):
 
             # Output the video to a file.
             video_file = f"{material.url}.mp4"
-            final_clip.write_videofile(video_file, fps=30, logger=None)
+            final_clip.write_videofile(video_file, fps=30, logger=None, preset="slow", bitrate="8000k")
             close_clip(clip)
             material.url = video_file
             logger.success(f"image processed: {video_file}")
