@@ -206,12 +206,24 @@ def combine_videos(
                 clip = video_effects.slidein_transition(clip, 1, shuffle_side)
             elif video_transition_mode.value == VideoTransitionMode.slide_out.value:
                 clip = video_effects.slideout_transition(clip, 1, shuffle_side)
+            elif video_transition_mode.value == VideoTransitionMode.crossfade.value:
+                clip = video_effects.crossfade_transition(clip, clip, 1)
+            elif video_transition_mode.value == VideoTransitionMode.wipe.value:
+                clip = video_effects.wipe_transition(clip, clip, 1)
+            elif video_transition_mode.value == VideoTransitionMode.circle_open.value:
+                clip = video_effects.circle_open_transition(clip, 1)
+            elif video_transition_mode.value == VideoTransitionMode.circle_close.value:
+                clip = video_effects.circle_close_transition(clip, 1)
             elif video_transition_mode.value == VideoTransitionMode.shuffle.value:
                 transition_funcs = [
                     lambda c: video_effects.fadein_transition(c, 1),
                     lambda c: video_effects.fadeout_transition(c, 1),
                     lambda c: video_effects.slidein_transition(c, 1, shuffle_side),
                     lambda c: video_effects.slideout_transition(c, 1, shuffle_side),
+                    lambda c: video_effects.crossfade_transition(c, c, 1),
+                    lambda c: video_effects.wipe_transition(c, c, 1),
+                    lambda c: video_effects.circle_open_transition(c, 1),
+                    lambda c: video_effects.circle_close_transition(c, 1),
                 ]
                 shuffle_transition = random.choice(transition_funcs)
                 clip = shuffle_transition(clip)

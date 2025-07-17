@@ -25,6 +25,10 @@ class VideoTransitionMode(str, Enum):
     fade_out = "FadeOut"
     slide_in = "SlideIn"
     slide_out = "SlideOut"
+    crossfade = "Crossfade"
+    wipe = "Wipe"
+    circle_open = "CircleOpen"
+    circle_close = "CircleClose"
 
 
 class VideoQuality(str, Enum):
