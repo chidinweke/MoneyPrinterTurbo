@@ -18,6 +18,7 @@ from moviepy import (
     concatenate_videoclips,
 )
 from moviepy.video.tools.subtitles import SubtitlesClip
+import moviepy.video.fx as vfx
 from PIL import ImageFont
 
 from app.models import const
@@ -192,7 +193,11 @@ def combine_videos(
                     new_height = int(clip_h * scale_factor)
 
                     background = ColorClip(size=(video_width, video_height), color=(0, 0, 0)).with_duration(clip_duration)
-                    clip_resized = clip.resized(newsize=(new_width, new_height), interpolation="lanczos").with_position("center")
+                    resize_func = getattr(vfx, "resize", None)
+                    if resize_func:
+                        clip_resized = resize_func(clip, newsize=(new_width, new_height), interpolation="lanczos").with_position("center")
+                    else:
+                        clip_resized = clip.resized(newsize=(new_width, new_height)).with_position("center")
                     clip = CompositeVideoClip([background, clip_resized])
                     
             shuffle_side = random.choice(["left", "right", "top", "bottom"])
@@ -533,10 +538,17 @@ def preprocess_video(materials: List[MaterialInfo], clip_duration=4):
             # The zoom effect starts from the original size and gradually scales up to 120%.
             # t represents the current time, and clip.duration is the total duration of the clip (3 seconds).
             # Note: 1 represents 100% size, so 1.2 represents 120% size.
-            zoom_clip = clip.resized(
-                lambda t: 1 + (clip_duration * 0.03) * (t / clip.duration),
-                interpolation="lanczos",
-            )
+            resize_func = getattr(vfx, "resize", None)
+            if resize_func:
+                zoom_clip = resize_func(
+                    clip,
+                    lambda t: 1 + (clip_duration * 0.03) * (t / clip.duration),
+                    interpolation="lanczos",
+                )
+            else:
+                zoom_clip = clip.resized(
+                    lambda t: 1 + (clip_duration * 0.03) * (t / clip.duration)
+                )
 
             # Optionally, create a composite video clip containing the zoomed clip.
             # This is useful when you want to add other elements to the video.
