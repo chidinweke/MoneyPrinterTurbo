@@ -192,7 +192,7 @@ def combine_videos(
                     new_height = int(clip_h * scale_factor)
 
                     background = ColorClip(size=(video_width, video_height), color=(0, 0, 0)).with_duration(clip_duration)
-                    clip_resized = clip.resized(new_size=(new_width, new_height)).with_position("center")
+                    clip_resized = clip.resized(newsize=(new_width, new_height), interpolation="lanczos").with_position("center")
                     clip = CompositeVideoClip([background, clip_resized])
                     
             shuffle_side = random.choice(["left", "right", "top", "bottom"])
@@ -534,7 +534,8 @@ def preprocess_video(materials: List[MaterialInfo], clip_duration=4):
             # t represents the current time, and clip.duration is the total duration of the clip (3 seconds).
             # Note: 1 represents 100% size, so 1.2 represents 120% size.
             zoom_clip = clip.resized(
-                lambda t: 1 + (clip_duration * 0.03) * (t / clip.duration)
+                lambda t: 1 + (clip_duration * 0.03) * (t / clip.duration),
+                interpolation="lanczos",
             )
 
             # Optionally, create a composite video clip containing the zoomed clip.
