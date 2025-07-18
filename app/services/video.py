@@ -49,7 +49,7 @@ class SubClippedVideoClip:
 
 
 audio_codec = "aac"
-video_codec = "libx264"
+video_codec = "libvpx-vp9"
 fps = 30
 
 def close_clip(clip):
